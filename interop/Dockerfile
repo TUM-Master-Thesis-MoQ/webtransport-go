@@ -19,16 +19,17 @@ ENV PATH="/go/bin:${PATH}"
 ARG CACHEBUST=1
 
 # build other branches / commits / tags using --build-arg GITREF="<git reference>"
-ARG GITREF="master"
+# TODO: switch back to master
+ARG GITREF="interop-runner"
 
-RUN git clone https://github.com/quic-go/webtransport-go-go
+RUN git clone https://github.com/quic-go/webtransport-go
 WORKDIR /webtransport-go
 RUN git checkout ${GITREF}
 RUN go get ./...
 
 RUN git rev-parse HEAD | tee commit.txt
-RUN go build -o server -ldflags="-X github.com/quic-go/quic-go/qlog.quicGoVersion=$(git describe --always --long --dirty)" interoprunner/server/main.go
-RUN go build -o client -ldflags="-X github.com/quic-go/quic-go/qlog.quicGoVersion=$(git describe --always --long --dirty)" interoprunner/client/main.go
+RUN go build -o server interop/server/main.go
+RUN go build -o client interop/client/main.go
 
 
 FROM martenseemann/quic-network-simulator-endpoint:latest
