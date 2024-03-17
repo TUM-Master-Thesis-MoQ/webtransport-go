@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"crypto/tls"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -47,6 +49,8 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	hash := sha256.Sum256(cert.Certificate[0])
+	fmt.Printf("Server Certificate Hash: %#v (base64: %s)\n", hash, base64.RawStdEncoding.EncodeToString(hash[:]))
 	tlsConf = &tls.Config{
 		Certificates: []tls.Certificate{cert},
 		KeyLogWriter: keyLog,
