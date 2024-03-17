@@ -94,6 +94,7 @@ func runHTTP09Server(quicConf *quic.Config) error {
 			TLSConfig:  tlsConf,
 			QuicConfig: quicConf,
 		},
+		CheckOrigin: func(*http.Request) bool { return true },
 	}
 
 	fileSystemHandler := http.NewServeMux()
